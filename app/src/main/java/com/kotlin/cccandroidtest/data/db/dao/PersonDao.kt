@@ -13,8 +13,8 @@ interface PersonDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(vararg person: Person)
 
-    @Query("SELECT * from person LIMIT 1")
-    fun getPerson(): Flowable<Person>
+    @Query("SELECT * FROM person WHERE id=:id ")
+    fun getPerson(id: String?): Person
 
     @Query("DELETE FROM person")
     suspend fun deleteAll()

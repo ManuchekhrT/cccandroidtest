@@ -33,7 +33,7 @@ data class EstimateWithPerson(
     val number: Int?,
     val revisionNumber: Int?,
     val createdDate: String?,
-    val createdBy: Person?,
-    val requestedBy: Person?,
-    val contact: Person?
+    val personConnWithCreatedBy: Person?,
+    val personConnWithRequestedBy: Person?,
+    val personConnWithContact: Person?
 )

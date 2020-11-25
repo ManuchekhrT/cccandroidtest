@@ -5,5 +5,5 @@ import com.kotlin.cccandroidtest.data.db.model.Person
 import io.reactivex.Flowable
 
 class PersonRepository(private val personDao: PersonDao) {
-    fun getPerson(): Flowable<Person> = personDao.getPerson()
+    fun getPerson(id: String?): Person = personDao.getPerson(id)
 }

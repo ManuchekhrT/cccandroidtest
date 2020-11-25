@@ -33,7 +33,13 @@ class MainViewModel(
     val createdDate: MutableLiveData<String> by lazy {
         MutableLiveData<String>()
     }
-    val fullName: MutableLiveData<String> by lazy {
+    val createdBy: MutableLiveData<String> by lazy {
+        MutableLiveData<String>()
+    }
+    val requester: MutableLiveData<String> by lazy {
+        MutableLiveData<String>()
+    }
+    val contact: MutableLiveData<String> by lazy {
         MutableLiveData<String>()
     }
 
@@ -41,23 +47,21 @@ class MainViewModel(
 
     fun getEstimateWithPerson() {
         disposable?.dispose()
-        disposable = Flowable.zip(
-            estimateRepository.getEstimate(),
-            personRepository.getPerson(),
-            BiFunction<Estimate, Person, EstimateWithPerson> { t1: Estimate, t2: Person ->
+        disposable = estimateRepository.getEstimate()
+            .subscribeOn(Schedulers.io())
+            .map {
                 EstimateWithPerson(
-                    t1.id,
-                    t1.company,
-                    t1.address,
-                    t1.number,
-                    t1.revisionNumber,
-                    t1.createdDate,
-                    t2,
-                    t2,
-                    t2
+                    it.id,
+                    it.company,
+                    it.address,
+                    it.number,
+                    it.revisionNumber,
+                    it.createdDate,
+                    personRepository.getPerson(it.createdBy),
+                    personRepository.getPerson(it.requestedBy),
+                    personRepository.getPerson(it.contact)
                 )
             }
-        ).subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 company.value = it.company
@@ -65,10 +69,13 @@ class MainViewModel(
                 number.value = it.number
                 revisionNumber.value = it.revisionNumber
                 createdDate.value = it.createdDate
-                fullName.value = it.createdBy?.firstName + " " + it.createdBy?.lastName
+                createdBy.value = it.personConnWithCreatedBy?.firstName + " " + it.personConnWithCreatedBy?.lastName
+                requester.value = it.personConnWithRequestedBy?.firstName + " " + it.personConnWithRequestedBy?.lastName
+                contact.value = it.personConnWithContact?.firstName + " " + it.personConnWithContact?.lastName
             }, {
                 it.printStackTrace()
             })
+
     }
 
     override fun onCleared() {

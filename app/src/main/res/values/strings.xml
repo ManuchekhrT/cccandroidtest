@@ -1,3 +1,16 @@
 <resources>
     <string name="app_name">CCCAndroidTest</string>
+    <string name="company">Company</string>
+    <string name="address">Address</string>
+    <string name="est_details">Est. Details</string>
+    <string name="est_number">Est. Number</string>
+    <string name="number">32</string>
+    <string name="est_created">Created</string>
+    <string name="created">2020-08-22</string>
+    <string name="requester">Requester</string>
+    <string name="full_name">Manu Tursunov</string>
+    <string name="est_revision_number">Revision Number</string>
+    <string name="revision_number">2</string>
+    <string name="est_created_by">Created By</string>
+    <string name="est_contact">Contact</string>
 </resources>

@@ -5,16 +5,17 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.kotlin.cccandroidtest.data.db.model.Person
+import io.reactivex.Flowable
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface PersonDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertAll(vararg persons: Person)
+    suspend fun insert(vararg person: Person)
 
-    @Query("SELECT * FROM person")
-    fun getAll(): List<Person>
+    @Query("SELECT * from person LIMIT 1")
+    fun getPerson(): Flowable<Person>
 
-    @Query("SELECT * FROM person WHERE id = :id")
-    fun getPersonById(id: String): Person
+    @Query("DELETE FROM person")
+    suspend fun deleteAll()
 }

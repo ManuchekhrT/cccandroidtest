@@ -19,12 +19,10 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun personDao(): PersonDao
 
     companion object {
-        // Singleton prevents multiple instances of database opening at the
-        // same time.
         @Volatile
         private var INSTANCE: AppDatabase? = null
 
-        private const val DB_NAME = "cccandroidtest.db"
+        private const val DB_NAME = "cccandroidtest_db"
 
         fun getAppDatabase(
             context: Context,
@@ -37,7 +35,8 @@ abstract class AppDatabase : RoomDatabase() {
                     context.applicationContext,
                     AppDatabase::class.java,
                     DB_NAME
-                ).addCallback(AppDatabaseCallback(scope)).build()
+                ).addCallback(AppDatabaseCallback(scope))
+                    .build()
                 INSTANCE = instance
                 // return instance
                 instance
@@ -55,6 +54,9 @@ abstract class AppDatabase : RoomDatabase() {
                 scope.launch {
                     val estimateDao = database.estimateDao()
                     val personDao = database.personDao()
+
+                    estimateDao.deleteAll()
+                    personDao.deleteAll()
 
                     /*
                           "estimate": {
@@ -76,28 +78,27 @@ abstract class AppDatabase : RoomDatabase() {
                                        "phone_number": "123-456-7890"
                            }
                     */
-                    estimateDao.insertAll(
-                        Estimate(
-                            "c574b0b4-bdef-4b92-a8f0-608a86ccf5ab",
-                            "Placebo Secondary School",
-                            "32 Commissioners Road East",
-                            32,
-                            3,
-                            "2020-08-22 15:23:54",
-                            "85a57f85-a52d-4137-a0d1-62e61362f716",
-                            "85a57f85-a52d-4137-a0d1-62e61362f716",
-                            "85a57f85-a52d-4137-a0d1-62e61362f716"
-                        )
+                    val estimate = Estimate(
+                        "c574b0b4-bdef-4b92-a8f0-608a86ccf5ab",
+                        "Placebo Secondary School",
+                        "32 Commissioners Road East",
+                        32,
+                        3,
+                        "2020-08-22 15:23:54",
+                        "85a57f85-a52d-4137-a0d1-62e61362f716",
+                        "85a57f85-a52d-4137-a0d1-62e61362f716",
+                        "85a57f85-a52d-4137-a0d1-62e61362f716"
                     )
-                    personDao.insertAll(
-                        Person(
-                            "85a57f85-a52d-4137-a0d1-62e61362f716",
-                            "Joseph",
-                            "Sham",
-                            "joseph.sham@fake.fake",
-                            "123-456-7890"
-                        )
+                    estimateDao.insert(estimate)
+
+                    val person = Person(
+                        "85a57f85-a52d-4137-a0d1-62e61362f716",
+                        "Joseph",
+                        "Sham",
+                        "joseph.sham@fake.fake",
+                        "123-456-7890"
                     )
+                    personDao.insert(person)
                 }
             }
         }

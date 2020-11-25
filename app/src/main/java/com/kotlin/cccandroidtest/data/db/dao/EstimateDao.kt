@@ -5,17 +5,17 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.kotlin.cccandroidtest.data.db.model.Estimate
-import com.kotlin.cccandroidtest.data.db.model.Person
-import kotlinx.coroutines.flow.Flow
+import io.reactivex.Flowable
 
 @Dao
 interface EstimateDao {
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertAll(vararg estimates: Estimate)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(vararg estimate: Estimate)
 
-    @Query("SELECT * FROM estimate")
-    fun getAll(): List<Estimate>
+    @Query("SELECT * from estimate LIMIT 1")
+    fun getEstimate(): Flowable<Estimate>
 
-    @Query("SELECT * FROM estimate WHERE id = :id")
-    fun getEstimateById(id: Int): Estimate
+    @Query("DELETE FROM estimate")
+    suspend fun deleteAll()
+
 }
